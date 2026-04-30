@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛒 Shop Mạc Bách | Cày Thuê Blox Fruit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+    body { min-height: 100vh; background: radial-gradient(circle at 20% 30%, #1a1f35, #0b0e14); display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; }
+    .bg-blox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://i.imgur.com/3PZt8hU.jpeg') no-repeat center center fixed; background-size: cover; opacity: 0.15; z-index: 0; }
+    .container { position: relative; z-index: 2; max-width: 1300px; width: 100%; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 20px; }
+    .logo { font-size: 48px; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff6a00, #ff2a2a); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 40px #ff6a00; }
+    .logo i { color: #ffd700; margin: 0 10px; }
+    .slogan { color: #b0c7e9; font-size: 16px; letter-spacing: 5px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(8,14,26,0.9); padding: 15px 25px; border-radius: 20px; margin: 20px 0; border: 1px solid #2e5a88; backdrop-filter: blur(5px); }
+    .user-info { color: white; display: flex; align-items: center; gap: 20px; }
+    .balance { background: #1e3a5f; padding: 10px 20px; border-radius: 40px; color: #ffd966; font-weight: 800; font-size: 20px; }
+    .btn-logout { background: #aa3333; color: white; border: none; padding: 10px 20px; border-radius: 30px; cursor: pointer; font-weight: 700; }
+    .nav-menu { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+    .nav-item { color: #e0e0e0; text-decoration: none; font-weight: 700; padding: 12px 28px; border-radius: 40px; background: rgba(20,30,50,0.8); border: 1px solid #3a5a7a; transition: 0.3s; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .nav-item i { color: #ffb732; }
+    .nav-item.active { background: #ff6a00; color: #000; border-color: #ffd700; }
+    .page { display: none; background: rgba(8,14,26,0.95); backdrop-filter: blur(10px); border: 2px solid #00a6ff; border-radius: 30px; padding: 30px; }
+    .page.active { display: block; }
+    .page-title { color: #ffd966; font-size: 28px; font-weight: 800; margin-bottom: 25px; }
+    .form-group { margin-bottom: 20px; }
+    label { color: #9cc9ff; font-weight: 700; display: block; margin-bottom: 8px; }
+    label i { color: #ffb732; width: 20px; margin-right: 6px; }
+    input, select, textarea { width: 100%; padding: 14px 16px; background: #07111e; border: 2px solid #2a4a70; border-radius: 15px; color: white; font-size: 15px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #ffb732; }
+    textarea { min-height: 80px; resize: vertical; }
+    .btn { padding: 12px 24px; border-radius: 40px; font-weight: 800; font-size: 16px; cursor: pointer; border: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 10px; }
+    .btn-primary { background: linear-gradient(145deg, #00b4ff, #0066cc); color: white; box-shadow: 0 4px 0 #004488; }
+    .btn-primary:active { transform: translateY(4px); box-shadow: none; }
+    .btn-success { background: #28a745; color: white; }
+    .btn-warning { background: #ffc107; color: #000; }
+    .btn-danger { background: #dc3545; color: white; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+    .service-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-height: 500px; overflow-y: auto; }
+    .service-card { background: #1a2740; border-radius: 20px; padding: 20px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+    .service-card:hover { background: #243b5e; border-color: #ffae00; }
+    .service-card.selected { border-color: #ffd966; background: #1e3a5f; }
+    .service-name { color: white; font-weight: 700; font-size: 18px; }
+    .service-req { color: #9bb; font-size: 13px; margin: 8px 0; }
+    .service-price { color: #ffd966; font-weight: 800; font-size: 22px; }
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; color: white; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #2e5a88; }
+    th { color: #ffd966; }
+    .card-item { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+    .card-item select, .card-item input { flex: 1; padding: 10px; }
+    .btn-add-card { background: #1e3a5f; color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; }
+    .btn-remove { background: #aa3333; color: white; border: none; padding: 10px 14px; border-radius: 30px; cursor: pointer; }
+    .total-display { text-align: right; font-size: 20px; color: #ffd966; margin: 15px 0; font-weight: 800; }
+    .fee-info { color: #ff9800; font-size: 14px; margin-top: 5px; }
+    .receive-info { color: #4caf50; font-size: 14px; margin-top: 5px; font-weight: 700; }
+    .message { margin-top: 15px; font-weight: 700; min-height: 30px; }
+    .text-success { color: #00ff88; } .text-danger { color: #ff6b6b; } .text-info { color: #00c8ff; }
+    .flex-row { display: flex; gap: 15px; } .flex-row .form-group { flex: 1; }
+    .auth-box { max-width: 450px; margin: 50px auto; }
+    .footer { margin-top: 40px; color: #6f8faf; text-align: center; }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+    .status-pending { background: #ffc107; color: #000; }
+    .status-processing { background: #17a2b8; color: white; }
+    .status-completed { background: #28a745; color: white; }
+    .status-cancelled { background: #dc3545; color: white; }
+    .status-approved { background: #28a745; color: white; }
+    .status-rejected { background: #dc3545; color: white; }
+    .home-buttons { display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap; }
+    .home-btn { background: #1a2740; border: 2px solid #ffb732; border-radius: 20px; padding: 40px; text-align: center; cursor: pointer; transition: 0.3s; width: 250px; }
+    .home-btn:hover { background: #243b5e; border-color: #ff6a00; transform: scale(1.03); }
+    .home-btn i { font-size: 60px; color: #ffb732; margin-bottom: 15px; }
+    .home-btn h3 { color: white; margin-bottom: 10px; }
+    .home-btn p { color: #aaa; }
+    .acc-card { background: #1a2740; border-radius: 20px; padding: 15px; text-align: center; }
+    .acc-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 15px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+<div class="bg-blox"></div>
+<div class="container">
+  <div class="header">
+    <div class="logo"><i class="fas fa-store"></i> Shop Mạc Bách <i class="fas fa-store"></i></div>
+    <div class="slogan">CÀY THUÊ BLOX FRUIT · UY TÍN SỐ 1</div>
+  </div>
+
+  <!-- AUTH -->
+  <div id="authSection">
+    <div class="auth-box page active" id="loginPage">
+      <div class="page-title"><i class="fas fa-sign-in-alt"></i> Đăng nhập</div>
+      <div class="form-group"><label><i class="fas fa-user"></i> Tên đăng nhập</label><input type="text" id="loginUsername" placeholder="Username"></div>
+      <div class="form-group"><label><i class="fas fa-lock"></i> Mật khẩu</label><input type="password" id="loginPassword" placeholder="Password"></div>
+      <button class="btn btn-primary" onclick="login()"><i class="fas fa-sign-in-alt"></i> Đăng nhập</button>
+      <p style="color:#9bb; margin-top:20px;">Chưa có tài khoản? <a href="#" style="color:#00c8ff;" onclick="showRegister()">Đăng ký</a></p>
+      <div id="loginMessage" class="message"></div>
+    </div>
+    <div class="auth-box page" id="registerPage">
+      <div class="page-title"><i class="fas fa-user-plus"></i> Đăng ký</div>
+      <div class="form-group"><label><i class="fas fa-user"></i> Tên đăng nhập</label><input type="text" id="regUsername" placeholder="Username"></div>
+      <div class="form-group"><label><i class="fas fa-lock"></i> Mật khẩu</label><input type="password" id="regPassword" placeholder="Password"></div>
+      <div class="form-group"><label><i class="fas fa-lock"></i> Xác nhận</label><input type="password" id="regConfirm" placeholder="Confirm"></div>
+      <button class="btn btn-primary" onclick="register()"><i class="fas fa-user-plus"></i> Đăng ký</button>
+      <p style="color:#9bb; margin-top:20px;">Đã có tài khoản? <a href="#" style="color:#00c8ff;" onclick="showLogin()">Đăng nhập</a></p>
+      <div id="registerMessage" class="message"></div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="mainSection" style="display:none;">
+    <div class="top-bar">
+      <div class="user-info">
+        <span><i class="fas fa-user"></i> <span id="displayUsername"></span><span id="adminBadge" style="display:none; background:#ff6a00; padding:3px 10px; border-radius:20px; color:#000; margin-left:10px;">ADMIN</span></span>
+        <span class="balance"><i class="fas fa-coins"></i> <span id="displayBalance">0</span>đ</span>
+      </div>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</button>
+    </div>
+    <div class="nav-menu">
+      <a class="nav-item active" data-page="homePage"><i class="fas fa-home"></i> Trang chủ</a>
+      <a class="nav-item" data-page="rechargePage"><i class="fas fa-credit-card"></i> Nạp tiền</a>
+      <a class="nav-item" data-page="orderPage"><i class="fas fa-crown"></i> Cày Thuê</a>
+      <a class="nav-item" data-page="customAccPage"><i class="fas fa-gift"></i> Acc Tự Chọn</a>
+      <a class="nav-item" data-page="randomAccPage"><i class="fas fa-random"></i> Random Acc 10k</a>
+      <a class="nav-item" data-page="historyPage"><i class="fas fa-history"></i> Lịch sử</a>
+      <a class="nav-item admin-only" data-page="adminPage" style="display:none;"><i class="fas fa-user-cog"></i> Admin</a>
+    </div>
+
+    <!-- HOME -->
+    <div class="page active" id="homePage">
+      <div class="page-title"><i class="fas fa-home"></i> Trang chủ</div>
+      <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:20px;">
+        <div style="background:#1a2740; padding:30px; border-radius:20px; text-align:center;"><i class="fas fa-coins" style="font-size:40px; color:#ffd966;"></i><h3 style="color:white; margin:15px 0;">Số dư</h3><div style="font-size:36px; color:#ffd966;" id="homeBalance">0đ</div></div>
+        <div style="background:#1a2740; padding:30px; border-radius:20px; text-align:center;"><i class="fas fa-shopping-cart" style="font-size:40px; color:#00c8ff;"></i><h3 style="color:white; margin:15px 0;">Đơn hàng</h3><div style="font-size:36px; color:#00c8ff;" id="homeOrders">0</div></div>
+        <div style="background:#1a2740; padding:30px; border-radius:20px; text-align:center;"><i class="fas fa-clock" style="font-size:40px; color:#ffb732;"></i><h3 style="color:white; margin:15px 0;">Đang xử lý</h3><div style="font-size:36px; color:#ffb732;" id="homeProcessing">0</div></div>
+      </div>
+      <div class="home-buttons">
+        <div class="home-btn" onclick="navigateTo('orderPage')"><i class="fas fa-crown"></i><h3>Cày Thuê</h3><p>Đặt dịch vụ cày thuê</p></div>
+        <div class="home-btn" onclick="navigateTo('customAccPage')"><i class="fas fa-gift"></i><h3>Acc Tự Chọn</h3><p>Mua acc với giá tùy chỉnh</p></div>
+        <div class="home-btn" onclick="navigateTo('randomAccPage')"><i class="fas fa-random"></i><h3>Random Acc 10k</h3><p>Acc ngẫu nhiên giá rẻ</p></div>
+      </div>
+      <div style="margin-top:30px; text-align:center; color:#ffd966;"><i class="fas fa-phone-alt"></i> <strong>Hỗ trợ Zalo:</strong> 0925345567</div>
+    </div>
+
+    <!-- NẠP TIỀN -->
+    <div class="page" id="rechargePage">
+      <div class="page-title"><i class="fas fa-credit-card"></i> Nạp tiền</div>
+      <div style="max-width:600px;">
+        <div id="cardsContainer"></div>
+        <button class="btn-add-card" id="addCardBtn"><i class="fas fa-plus-circle"></i> Thêm thẻ</button>
+        <div class="total-display">Tổng mệnh giá: <span id="totalDisplay">0</span>đ | Nhận được: <span id="totalReceiveDisplay" style="color:#4caf50;">0</span>đ</div>
+        <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="requestRecharge()">Gửi yêu cầu nạp tiền</button>
+        <div id="rechargeMessage" class="message"></div>
+        <h3 style="color:#ffd966; margin:30px 0 20px;">Lịch sử nạp</h3>
+        <div class="table-container" id="rechargeHistory"></div>
+      </div>
+    </div>
+
+    <!-- CÀY THUÊ -->
+    <div class="page" id="orderPage">
+      <div class="page-title"><i class="fas fa-crown"></i> Đặt đơn cày thuê</div>
+      <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:30px;">
+        <div>
+          <input type="text" placeholder="🔍 Tìm gói..." id="searchService" style="width:100%; padding:12px; margin-bottom:20px; background:#07111e; border:2px solid #2a4a70; border-radius:30px; color:white;">
+          <div class="service-grid" id="serviceList"></div>
+        </div>
+        <div>
+          <div style="background:#0f1a2b; border-radius:20px; padding:25px;">
+            <h3 style="color:#ffd966; margin-bottom:20px;">Thông tin đơn</h3>
+            <div class="form-group"><label><i class="fas fa-user"></i> Tài khoản game</label><input type="text" id="orderAccGame" placeholder="Username Roblox"></div>
+            <div class="form-group"><label><i class="fas fa-lock"></i> Mật khẩu</label><input type="text" id="orderPassGame" placeholder="Password"></div>
+            <div class="form-group"><label><i class="fas fa-phone"></i> Liên hệ</label><input type="text" id="orderContact" placeholder="Zalo/Discord"></div>
+            <div class="form-group"><label><i class="fas fa-pen"></i> Ghi chú</label><textarea id="orderNote"></textarea></div>
+            <div style="background:#1a2740; padding:20px; border-radius:15px; margin:20px 0;">
+              <div style="color:#9bb;">Gói đã chọn:</div>
+              <div style="color:white; font-weight:700;" id="selectedServiceName">Chưa chọn</div>
+              <div style="color:#ffd966; font-size:24px;" id="selectedServicePrice">0đ</div>
+            </div>
+            <div style="color:#9bb;">Số dư: <span id="orderBalance">0đ</span></div>
+            <button class="btn btn-primary" style="width:100%; margin-top:15px;" onclick="createOrder()"><i class="fas fa-check-circle"></i> Tạo đơn</button>
+            <div id="orderMessage" class="message"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACC TỰ CHỌN -->
+    <div class="page" id="customAccPage">
+      <div class="page-title"><i class="fas fa-gift"></i> Acc Tự Chọn</div>
+      <p style="color:#aaa; margin-bottom:20px;">Chọn mua tài khoản với giá tùy chỉnh.</p>
+      <div id="adminCustomControls" style="display:none; margin-bottom:20px;">
+        <button class="btn btn-success" onclick="showAddCustomAccForm()"><i class="fas fa-plus"></i> Thêm acc</button>
+        <div id="addCustomAccForm" style="display:none; margin-top:15px; background:#1a2740; padding:20px; border-radius:15px;">
+          <div class="form-group"><label>Tên tài khoản</label><input type="text" id="newAccName" placeholder="Username"></div>
+          <div class="form-group"><label>Mật khẩu</label><input type="text" id="newAccPass" placeholder="Password"></div>
+          <div class="form-group"><label>Giá tiền (VNĐ)</label><input type="number" id="newAccPrice" placeholder="10000"></div>
+          <div class="form-group"><label>Ảnh (URL)</label><input type="text" id="newAccImage" placeholder="https://i.imgur.com/..."></div>
+          <div class="form-group"><label><i class="fas fa-pen"></i> Ghi chú cho admin</label><textarea id="newAccNote" placeholder="Ghi chú về acc này (không bắt buộc)..." style="min-height:60px;"></textarea></div>
+          <button class="btn btn-primary" onclick="addCustomAcc()">Thêm</button>
+          <button class="btn btn-danger" onclick="hideAddCustomAccForm()">Hủy</button>
+        </div>
+      </div>
+      <div class="service-grid" id="customAccList"></div>
+      <div id="customAccMessage" class="message"></div>
+    </div>
+
+    <!-- RANDOM ACC 10K -->
+    <div class="page" id="randomAccPage">
+      <div class="page-title"><i class="fas fa-random"></i> Random Acc 10k</div>
+      <p style="color:#aaa; margin-bottom:20px;">Mua tài khoản ngẫu nhiên giá 10,000đ.</p>
+      <div id="adminRandomControls" style="display:none; margin-bottom:20px;">
+        <button class="btn btn-success" onclick="showAddRandomAccForm()"><i class="fas fa-plus"></i> Thêm acc</button>
+        <div id="addRandomAccForm" style="display:none; margin-top:15px; background:#1a2740; padding:20px; border-radius:15px;">
+          <div class="form-group"><label>Tên tài khoản</label><input type="text" id="newRandomAccUser" placeholder="Username"></div>
+          <div class="form-group"><label>Mật khẩu</label><input type="text" id="newRandomAccPass" placeholder="Password"></div>
+          <button class="btn btn-primary" onclick="addRandomAcc()">Thêm</button>
+          <button class="btn btn-danger" onclick="hideAddRandomAccForm()">Hủy</button>
+        </div>
+      </div>
+      <div class="service-grid" id="randomAccList"></div>
+      <div id="randomAccMessage" class="message"></div>
+    </div>
+
+    <!-- LỊCH SỬ -->
+    <div class="page" id="historyPage">
+      <div class="page-title"><i class="fas fa-history"></i> Lịch sử</div>
+      <h3 style="color:#ffd966;">Lịch sử mua acc</h3>
+      <div class="table-container" id="purchasedAccsTable"></div>
+      <h3 style="color:#ffd966; margin-top:30px;">Lịch sử đơn hàng</h3>
+      <div class="table-container" id="orderHistory"></div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="page" id="adminPage">
+      <div class="page-title"><i class="fas fa-user-cog"></i> Quản trị</div>
+      <h3 style="color:#ffd966;"><i class="fas fa-clock"></i> Yêu cầu nạp chờ duyệt</h3>
+      <div class="table-container" id="pendingRecharges"></div>
+      <h3 style="color:#ffd966; margin-top:30px;"><i class="fas fa-list"></i> Tất cả yêu cầu nạp</h3>
+      <div class="table-container" id="allRecharges"></div>
+      <h3 style="color:#ffd966; margin-top:30px;"><i class="fas fa-shopping-cart"></i> Quản lý đơn hàng</h3>
+      <select id="orderStatusFilter" onchange="loadAllOrders()" style="width:200px; margin-bottom:15px;"><option value="all">Tất cả</option><option value="pending">Chờ xử lý</option><option value="processing">Đang cày</option><option value="completed">Hoàn thành</option><option value="cancelled">Đã hủy</option></select>
+      <div class="table-container" id="allOrders"></div>
+      <h3 style="color:#ffd966; margin-top:30px;"><i class="fas fa-search"></i> Tìm user</h3>
+      <div class="flex-row"><input type="text" id="searchUserInput" placeholder="Username..." style="flex:2;"><button class="btn btn-primary" onclick="searchUser()">Tìm</button></div>
+      <div id="searchResult" style="margin-top:20px;"></div>
+      <h3 style="color:#ffd966; margin-top:30px;"><i class="fas fa-users"></i> Tất cả user</h3>
+      <div class="table-container" id="allUsersTable"></div>
+    </div>
+  </div>
+  <div class="footer">© 2026 Shop Mạc Bách - Cày thuê Blox Fruit | Zalo: 0925345567</div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+  
+  const ENC_DB_URL = 'aHR0cHM6Ly9zaG9wLW1hYy1iYWNoLWRlZmF1bHQtcnRkYi5hc2lhLXNvdXRoZWFzdDEuZmlyZWJhc2VkYXRhYmFzZS5hcHA=';
+  const DB_URL = atob(ENC_DB_URL);
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDpEDwzx88bZs1bYVmYixpTEfQjdTvr4WI",
+    authDomain: "shop-mac-bach.firebaseapp.com",
+    databaseURL: DB_URL,
+    projectId: "shop-mac-bach",
+    storageBucket: "shop-mac-bach.firebasestorage.app",
+    messagingSenderId: "188208701589",
+    appId: "1:188208701589:web:1219e8f169447088bc3b9c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const ADMIN_PASSWORD = atob('YWRtaW55ZXVlbTEyMw==');
+  const DISCORD_WEBHOOK ='https://discord.com/api/webhooks/1495713412465037312/hN36W780TQGgMARcVVnIEb4phICRG0qVGJIhILLh9N4c44VXOQcZ4EhVKwaqRjlVxRSv';
+
+  // ==================== PHÍ NẠP THẺ (%) ====================
+  const providerFees = {
+    'Garena': 11,
+    'Viettel': 20,
+    'Vinaphone': 8,
+    'Mobifone': 16
+  };
+
+  let users = [];
+  let orders = [];
+  let recharges = [];
+  let customAccs = [];
+  let randomAccs = [];
+  let currentUser = null;
+  let selectedService = null;
+  let isBuying = false;
+
+  const services = [
+    { name: 'Lấy God Human', price: 30000, req: 'Không yêu cầu' },
+    { name: 'Cày Max Level', price: 50000, req: 'Từ Level 1 đến Max' },
+    { name: '10 Triệu Beli', price: 20000, req: 'Không yêu cầu' },
+    { name: '50 Triệu Beli', price: 70000, req: 'Không yêu cầu' },
+    { name: '100 Triệu Beli', price: 130000, req: 'Không yêu cầu' },
+    { name: '10k Fragment', price: 10000, req: 'Có sẵn Fragment' },
+    { name: '20k Fragment', price: 18000, req: 'Có sẵn Fragment' },
+    { name: '50k Fragment', price: 45000, req: 'Có sẵn Fragment' },
+    { name: '100k Fragment', price: 90000, req: 'Có sẵn Fragment' },
+    { name: 'Đánh Rip Indra', price: 20000, req: 'Có thể vào Sea 3' },
+    { name: 'Lấy Yama', price: 20000, req: 'Có thể vào Sea 3' },
+    { name: 'Lấy Nguyên Thạch Bóng Tối', price: 20000, req: 'Có thể vào Sea 3' },
+    { name: 'Lấy Mảnh Gương', price: 20000, req: 'Có thể vào Sea 3' },
+    { name: 'Lấy Tushita', price: 20000, req: 'Có thể vào Sea 3' },
+    { name: 'Lấy Tam Kiếm', price: 40000, req: 'Có 3 kiếm' },
+    { name: 'Lấy Song Kiếm', price: 30000, req: 'Có 2 kiếm' },
+    { name: 'Cày Mastery 1-300', price: 10000, req: 'Chưa có Mastery' },
+    { name: 'Cày Mastery 1-600', price: 20000, req: 'Chưa có Mastery' }
+  ];
+
+  async function saveAll() {
+    await set(ref(db, 'users'), users);
+    await set(ref(db, 'orders'), orders);
+    await set(ref(db, 'recharges'), recharges);
+    await set(ref(db, 'customAccs'), customAccs);
+    await set(ref(db, 'randomAccs'), randomAccs);
+  }
+
+  async function loadAll() {
+    const snapshot = await get(ref(db, '/'));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      users = data.users || [];
+      orders = data.orders || [];
+      recharges = data.recharges || [];
+      customAccs = data.customAccs || [];
+      randomAccs = data.randomAccs || [];
+    }
+    if (!users.find(u => u.username === 'admin')) {
+      users.push({ id: Date.now(), username: 'admin', password: ADMIN_PASSWORD, balance: 999999999, role: 'admin', createdAt: new Date().toLocaleString('vi-VN') });
+      await saveAll();
+    }
+  }
+
+  onValue(ref(db, '/'), (snapshot) => {
+    if (isBuying) return;
+    const data = snapshot.val();
+    if (data) {
+      users = data.users || [];
+      orders = data.orders || [];
+      recharges = data.recharges || [];
+      customAccs = data.customAccs || [];
+      randomAccs = data.randomAccs || [];
+      if (currentUser) {
+        const updatedUser = users.find(u => u.id === currentUser.id);
+        if (updatedUser) currentUser = updatedUser;
+        updateUI();
+        if (document.getElementById('customAccPage').classList.contains('active')) renderCustomAccs();
+        if (document.getElementById('randomAccPage').classList.contains('active')) renderRandomAccs();
+        if (document.getElementById('historyPage').classList.contains('active')) loadHistory();
+        if (document.getElementById('rechargePage').classList.contains('active')) loadRechargeHistory();
+        if (document.getElementById('adminPage').classList.contains('active')) refreshAdmin();
+      }
+    }
+  });
+
+  async function sendDiscord(content) {
+    try { await fetch(DISCORD_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({content}) }); } catch(e) {}
+  }
+
+  window.showRegister = () => { document.getElementById('loginPage').classList.remove('active'); document.getElementById('registerPage').classList.add('active'); };
+  window.showLogin = () => { document.getElementById('registerPage').classList.remove('active'); document.getElementById('loginPage').classList.add('active'); };
+
+  window.register = async () => {
+    let u = document.getElementById('regUsername').value.trim(), p = document.getElementById('regPassword').value, c = document.getElementById('regConfirm').value;
+    if (!u || !p) { document.getElementById('registerMessage').innerHTML = '<span class="text-danger">Nhập đầy đủ!</span>'; return; }
+    if (p !== c) { document.getElementById('registerMessage').innerHTML = '<span class="text-danger">Mật khẩu không khớp!</span>'; return; }
+    if (users.find(x => x.username === u)) { document.getElementById('registerMessage').innerHTML = '<span class="text-danger">Username đã tồn tại!</span>'; return; }
+    let newUser = { id: Date.now(), username: u, password: p, balance: 0, role: 'user', createdAt: new Date().toLocaleString('vi-VN') };
+    users.push(newUser); await saveAll(); currentUser = newUser;
+    sessionStorage.setItem('blox_user_id', currentUser.id);
+    showMain();
+  };
+
+  window.login = async () => {
+    let u = document.getElementById('loginUsername').value.trim(), p = document.getElementById('loginPassword').value;
+    let user = users.find(x => x.username === u && x.password === p);
+    if (user) { currentUser = user; sessionStorage.setItem('blox_user_id', currentUser.id); showMain(); }
+    else document.getElementById('loginMessage').innerHTML = '<span class="text-danger">Sai username/password!</span>';
+  };
+
+  function showMain() {
+    document.getElementById('authSection').style.display = 'none'; document.getElementById('mainSection').style.display = 'block';
+    updateUI(); renderServices(); loadHistory(); loadRechargeHistory(); renderCustomAccs(); renderRandomAccs();
+    if (currentUser.role === 'admin') {
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+      document.getElementById('adminBadge').style.display = 'inline-block';
+      document.getElementById('adminCustomControls').style.display = 'block';
+      document.getElementById('adminRandomControls').style.display = 'block';
+    } else {
+      document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+      document.getElementById('adminBadge').style.display = 'none';
+      document.getElementById('adminCustomControls').style.display = 'none';
+      document.getElementById('adminRandomControls').style.display = 'none';
+    }
+  }
+
+  function updateUI() {
+    document.getElementById('displayUsername').innerText = currentUser.username;
+    document.getElementById('displayBalance').innerText = currentUser.balance.toLocaleString() + 'đ';
+    document.getElementById('homeBalance').innerText = currentUser.balance.toLocaleString() + 'đ';
+    document.getElementById('orderBalance').innerText = currentUser.balance.toLocaleString() + 'đ';
+    document.getElementById('homeOrders').innerText = orders.filter(o => o.userId === currentUser.id).length;
+    document.getElementById('homeProcessing').innerText = orders.filter(o => o.userId === currentUser.id && (o.status==='pending'||o.status==='processing')).length;
+  }
+
+  window.logout = () => { 
+    sessionStorage.removeItem('blox_user_id');
+    currentUser = null; 
+    document.getElementById('authSection').style.display = 'block'; 
+    document.getElementById('mainSection').style.display = 'none'; 
+    showLogin(); 
+  };
+
+  function navigateTo(pageId) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    let target = document.getElementById(pageId);
+    if (target) {
+      target.classList.add('active');
+      let nav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+      if (nav) nav.classList.add('active');
+      if (pageId === 'adminPage') refreshAdmin();
+      if (pageId === 'customAccPage') renderCustomAccs();
+      if (pageId === 'randomAccPage') renderRandomAccs();
+      if (pageId === 'historyPage') { loadHistory(); loadPurchasedAccs(); }
+      if (pageId === 'orderPage') renderServices();
+    }
+  }
+  document.querySelectorAll('.nav-item').forEach(el => el.addEventListener('click', function() { navigateTo(this.dataset.page); }));
+  window.navigateTo = navigateTo;
+
+  function renderServices() {
+    let html = ''; services.forEach(s => html += `<div class="service-card" onclick="selectService('${s.name}', ${s.price})"><div class="service-name">${s.name}</div><div class="service-req">📋 ${s.req}</div><div class="service-price">${s.price.toLocaleString()}đ</div></div>`);
+    document.getElementById('serviceList').innerHTML = html;
+  }
+  window.selectService = (name, price) => { document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected')); event.currentTarget.classList.add('selected'); selectedService = { name, price }; document.getElementById('selectedServiceName').innerText = name; document.getElementById('selectedServicePrice').innerText = price.toLocaleString() + 'đ'; };
+
+  document.getElementById('searchService')?.addEventListener('input', e => {
+    let term = e.target.value.toLowerCase(), html = '';
+    services.filter(s => s.name.toLowerCase().includes(term)).forEach(s => html += `<div class="service-card" onclick="selectService('${s.name}', ${s.price})"><div class="service-name">${s.name}</div><div class="service-req">📋 ${s.req}</div><div class="service-price">${s.price.toLocaleString()}đ</div></div>`);
+    document.getElementById('serviceList').innerHTML = html;
+  });
+
+  window.createOrder = async () => {
+    let acc = document.getElementById('orderAccGame').value.trim(), pass = document.getElementById('orderPassGame').value.trim();
+    if (!acc || !pass) { document.getElementById('orderMessage').innerHTML = '<span class="text-danger">Nhập tài khoản game!</span>'; return; }
+    if (!selectedService) { document.getElementById('orderMessage').innerHTML = '<span class="text-danger">Chọn gói cày!</span>'; return; }
+    if (currentUser.balance < selectedService.price) { document.getElementById('orderMessage').innerHTML = '<span class="text-danger">Số dư không đủ!</span>'; return; }
+    currentUser.balance -= selectedService.price;
+    let idx = users.findIndex(u => u.id === currentUser.id); users[idx] = currentUser;
+    let order = { id: 'ORD'+Date.now(), userId: currentUser.id, username: currentUser.username, service: selectedService.name, price: selectedService.price, accGame: acc, passGame: pass, contact: document.getElementById('orderContact').value, note: document.getElementById('orderNote').value, status: 'pending', createdAt: new Date().toLocaleString('vi-VN') };
+    orders.push(order);
+    await saveAll(); updateUI(); loadHistory();
+    let msg = `🛒 **ĐƠN HÀNG MỚI**\n👤 ${currentUser.username}\n🎮 Acc: ${acc} | Pass: ${pass}\n📦 ${selectedService.name} - ${selectedService.price.toLocaleString()}đ\n📞 ${order.contact||'Không'}\n📝 ${order.note||'Không'}`;
+    await sendDiscord(msg);
+    document.getElementById('orderMessage').innerHTML = '<span class="text-success">Tạo đơn thành công!</span>';
+    document.getElementById('orderAccGame').value = ''; document.getElementById('orderPassGame').value = ''; document.getElementById('orderContact').value = ''; document.getElementById('orderNote').value = '';
+    selectedService = null; document.getElementById('selectedServiceName').innerText = 'Chưa chọn'; document.getElementById('selectedServicePrice').innerText = '0đ';
+  };
+
+  // ==================== PHẦN NẠP TIỀN (ĐÃ SỬA: THÊM % PHÍ) ====================
+  function createCard() {
+    let div = document.createElement('div'); div.className = 'card-item';
+    
+    let providerOptions = '';
+    for (let [key, fee] of Object.entries(providerFees)) {
+      providerOptions += `<option value="${key}">${key} (${fee}%)</option>`;
+    }
+    
+    div.innerHTML = `
+      <select class="card-provider" style="width:28%">
+        ${providerOptions}
+      </select>
+      <select class="card-amount" style="width:22%">
+        <option value="10000">10k</option>
+        <option value="20000">20k</option>
+        <option value="50000">50k</option>
+        <option value="100000">100k</option>
+        <option value="200000">200k</option>
+        <option value="500000">500k</option>
+      </select>
+      <input type="text" class="card-code" placeholder="Mã thẻ" style="width:18%">
+      <input type="text" class="card-serial" placeholder="Seri" style="width:18%">
+      <button class="btn-remove" onclick="this.parentElement.remove(); calcTotal()">✖</button>
+      <div class="fee-info" style="width:100%; margin-top:5px;">Phí: - | Nhận được: -</div>
+    `;
+    div.querySelector('.card-provider').addEventListener('change', calcTotal);
+    div.querySelector('.card-amount').addEventListener('change', calcTotal);
+    return div;
+  }
+  
+  function calcTotal() {
+    let total = 0;
+    let totalReceive = 0;
+    document.querySelectorAll('.card-item').forEach(card => {
+      const provider = card.querySelector('.card-provider')?.value;
+      const amountSel = card.querySelector('.card-amount');
+      const feeDiv = card.querySelector('.fee-info');
+      if (amountSel && amountSel.value) {
+        const amount = parseInt(amountSel.value);
+        total += amount;
+        if (provider && providerFees[provider] !== undefined) {
+          const fee = providerFees[provider];
+          const receive = Math.floor(amount * (100 - fee) / 100);
+          totalReceive += receive;
+          if (feeDiv) feeDiv.innerHTML = `Phí: ${fee}% (-${(amount - receive).toLocaleString()}đ) | <span style="color:#4caf50;">Nhận được: ${receive.toLocaleString()}đ</span>`;
+        } else {
+          totalReceive += amount;
+          if (feeDiv) feeDiv.innerHTML = `Phí: - | Nhận được: ${amount.toLocaleString()}đ`;
+        }
+      } else {
+        if (feeDiv) feeDiv.innerHTML = `Phí: - | Nhận được: -`;
+      }
+    });
+    document.getElementById('totalDisplay').innerText = total.toLocaleString();
+    document.getElementById('totalReceiveDisplay').innerText = totalReceive.toLocaleString();
+    return { total, totalReceive };
+  }
+
+  document.getElementById('addCardBtn').onclick = () => document.getElementById('cardsContainer').appendChild(createCard());
+
+  window.requestRecharge = async () => {
+    let cards = [], valid = true, total = 0, totalReceive = 0;
+    document.querySelectorAll('.card-item').forEach(c => {
+      let provider = c.querySelector('.card-provider').value, amount = parseInt(c.querySelector('.card-amount').value), code = c.querySelector('.card-code').value.trim(), serial = c.querySelector('.card-serial').value.trim();
+      if (!code || !serial) valid = false;
+      else {
+        const fee = providerFees[provider] || 0;
+        const receive = Math.floor(amount * (100 - fee) / 100);
+        cards.push({provider, amount, code, serial, fee, receive});
+        total += amount;
+        totalReceive += receive;
+      }
+    });
+    if (!cards.length || !valid) { document.getElementById('rechargeMessage').innerHTML = '<span class="text-danger">Nhập đủ thẻ!</span>'; return; }
+    let req = { id: Date.now(), userId: currentUser.id, username: currentUser.username, cards, total, totalReceive, status: 'pending', createdAt: new Date().toLocaleString('vi-VN') };
+    recharges.push(req); await saveAll(); loadRechargeHistory();
+    let msg = `💳 **YÊU CẦU NẠP TIỀN**\n👤 ${currentUser.username}\n💰 Tổng mệnh giá: ${total.toLocaleString()}đ\n📥 Thực nhận: ${totalReceive.toLocaleString()}đ\n`; 
+    cards.forEach((c,i) => msg += `Thẻ ${i+1}: ${c.provider} (${c.fee}%) ${c.amount.toLocaleString()}đ → Nhận: ${c.receive.toLocaleString()}đ - Mã: ${c.code} - Seri: ${c.serial}\n`);
+    await sendDiscord(msg);
+    document.getElementById('rechargeMessage').innerHTML = '<span class="text-success">Đã gửi yêu cầu!</span>';
+    document.getElementById('cardsContainer').innerHTML = ''; document.getElementById('cardsContainer').appendChild(createCard()); calcTotal();
+  };
+
+  function loadRechargeHistory() {
+    let html = '<table><tr><th>Mệnh giá</th><th>Thực nhận</th><th>Trạng thái</th><th>Ngày</th></tr>';
+    recharges.filter(r => r.userId === currentUser.id).reverse().forEach(r => { 
+      let cls = r.status==='approved'?'status-approved':(r.status==='rejected'?'status-rejected':'status-pending'), txt = r.status==='approved'?'Đã duyệt':(r.status==='rejected'?'Từ chối':'Chờ duyệt');
+      html += `<tr><td>${r.total.toLocaleString()}đ</td><td>${(r.totalReceive||r.total).toLocaleString()}đ</td><td><span class="status-badge ${cls}">${txt}</span></td><td>${r.createdAt}</td></tr>`; 
+    });
+    document.getElementById('rechargeHistory').innerHTML = html;
+  }
+
+  function renderCustomAccs() {
+    let html = '';
+    customAccs.forEach(acc => {
+      html += `<div class="acc-card service-card"><img src="${acc.image || 'https://i.imgur.com/3PZt8hU.jpeg'}" onerror="this.src='https://i.imgur.com/3PZt8hU.jpeg'"><div class="service-name">🎮 ${acc.username}</div><div class="service-price">${acc.price.toLocaleString()}đ</div>${acc.note ? `<div style="color:#ff9800; font-size:13px; margin-top:5px;">📝 ${acc.note}</div>` : ''}<button class="btn btn-success btn-sm" onclick="buyCustomAcc(${acc.id})">Mua</button></div>`;
+    });
+    document.getElementById('customAccList').innerHTML = html || '<p style="color:#aaa;">Chưa có acc nào.</p>';
+  }
+
+  window.buyCustomAcc = async (id) => {
+    if (isBuying) return;
+    isBuying = true;
+    let idx = customAccs.findIndex(a => a.id === id);
+    if (idx === -1) { alert('Acc không tồn tại!'); isBuying = false; return; }
+    let acc = customAccs[idx];
+    if (currentUser.balance < acc.price) {
+      document.getElementById('customAccMessage').innerHTML = '<span class="text-danger">Số dư không đủ!</span>';
+      isBuying = false;
+      return;
+    }
+    currentUser.balance -= acc.price;
+    let user = users.find(u => u.id === currentUser.id);
+    if (user) user.balance = currentUser.balance;
+    let order = { 
+      id: 'ACC'+Date.now(), 
+      userId: currentUser.id, 
+      username: currentUser.username, 
+      service: `🎁 Acc tự chọn: ${acc.username} / Pass: ${acc.password}`, 
+      price: acc.price, 
+      accGame: acc.username, 
+      passGame: acc.password, 
+      status: 'completed', 
+      createdAt: new Date().toLocaleString('vi-VN') 
+    };
+    orders.push(order);
+    customAccs.splice(idx, 1);
+    await saveAll();
+    const snapshot = await get(ref(db, '/'));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      users = data.users || [];
+      orders = data.orders || [];
+      customAccs = data.customAccs || [];
+      randomAccs = data.randomAccs || [];
+      const updatedUser = users.find(u => u.id === currentUser.id);
+      if (updatedUser) currentUser = updatedUser;
+    }
+    renderCustomAccs();
+    updateUI();
+    loadHistory();
+    document.getElementById('customAccMessage').innerHTML = '<span class="text-success">✅ Mua acc thành công!</span>';
+    sendDiscord(`🛒 ${currentUser.username} mua acc tự chọn: ${acc.username}`);
+    isBuying = false;
+  };
+
+  window.showAddCustomAccForm = () => { document.getElementById('addCustomAccForm').style.display = 'block'; };
+  window.hideAddCustomAccForm = () => { document.getElementById('addCustomAccForm').style.display = 'none'; };
+  window.addCustomAcc = async () => {
+    let u = document.getElementById('newAccName').value.trim(), p = document.getElementById('newAccPass').value.trim(), price = parseInt(document.getElementById('newAccPrice').value), img = document.getElementById('newAccImage').value.trim(), note = document.getElementById('newAccNote').value.trim();
+    if (!u || !p || !price) return alert('Nhập đủ!');
+    customAccs.push({ id: Date.now(), username: u, password: p, price, image: img, note: note });
+    await saveAll(); renderCustomAccs(); hideAddCustomAccForm();
+  };
+
+  function renderRandomAccs() {
+    let html = '';
+    randomAccs.forEach(acc => {
+      html += `<div class="service-card"><div class="service-name">🎮 ${acc.username}</div><div class="service-price">10,000đ</div><button class="btn btn-success btn-sm" onclick="buyRandomAcc(${acc.id})">Mua</button></div>`;
+    });
+    document.getElementById('randomAccList').innerHTML = html || '<p style="color:#aaa;">Chưa có acc nào.</p>';
+  }
+
+  window.buyRandomAcc = async (id) => {
+    if (isBuying) return;
+    isBuying = true;
+    let idx = randomAccs.findIndex(a => a.id === id);
+    if (idx === -1) { alert('Acc không tồn tại!'); isBuying = false; return; }
+    let acc = randomAccs[idx];
+    if (currentUser.balance < 10000) {
+      document.getElementById('randomAccMessage').innerHTML = '<span class="text-danger">Số dư không đủ!</span>';
+      isBuying = false;
+      return;
+    }
+    currentUser.balance -= 10000;
+    let user = users.find(u => u.id === currentUser.id);
+    if (user) user.balance = currentUser.balance;
+    let order = { 
+      id: 'RND'+Date.now(), 
+      userId: currentUser.id, 
+      username: currentUser.username, 
+      service: `🎲 Random Acc 10k: ${acc.username} / Pass: ${acc.password}`, 
+      price: 10000, 
+      accGame: acc.username, 
+      passGame: acc.password, 
+      status: 'completed', 
+      createdAt: new Date().toLocaleString('vi-VN') 
+    };
+    orders.push(order);
+    randomAccs.splice(idx, 1);
+    await saveAll();
+    const snapshot = await get(ref(db, '/'));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      users = data.users || [];
+      orders = data.orders || [];
+      customAccs = data.customAccs || [];
+      randomAccs = data.randomAccs || [];
+      const updatedUser = users.find(u => u.id === currentUser.id);
+      if (updatedUser) currentUser = updatedUser;
+    }
+    renderRandomAccs();
+    updateUI();
+    loadHistory();
+    document.getElementById('randomAccMessage').innerHTML = '<span class="text-success">✅ Mua acc thành công!</span>';
+    sendDiscord(`🛒 ${currentUser.username} mua random acc: ${acc.username}`);
+    isBuying = false;
+  };
+
+  window.showAddRandomAccForm = () => { document.getElementById('addRandomAccForm').style.display = 'block'; };
+  window.hideAddRandomAccForm = () => { document.getElementById('addRandomAccForm').style.display = 'none'; };
+  window.addRandomAcc = async () => {
+    let u = document.getElementById('newRandomAccUser').value.trim(), p = document.getElementById('newRandomAccPass').value.trim();
+    if (!u || !p) return alert('Nhập đủ!');
+    randomAccs.push({ id: Date.now(), username: u, password: p });
+    await saveAll(); renderRandomAccs(); hideAddRandomAccForm();
+  };
+
+  function loadHistory() {
+    let html = '<table><tr><th>Mã đơn</th><th>Gói cày</th><th>Giá</th><th>Trạng thái</th><th>Ngày</th></tr>';
+    orders.filter(o => o.userId === currentUser.id && !o.service.startsWith('🎁') && !o.service.startsWith('🎲')).reverse().forEach(o => {
+      let cls = o.status==='pending'?'status-pending':(o.status==='processing'?'status-processing':(o.status==='completed'?'status-completed':'status-cancelled')), txt = o.status==='pending'?'Chờ':(o.status==='processing'?'Đang cày':(o.status==='completed'?'Xong':'Hủy'));
+      html += `<tr><td>${o.id}</td><td>${o.service}</td><td>${o.price.toLocaleString()}đ</td><td><span class="status-badge ${cls}">${txt}</span></td><td>${o.createdAt}</td></tr>`;
+    });
+    document.getElementById('orderHistory').innerHTML = html;
+    loadPurchasedAccs();
+  }
+
+  function loadPurchasedAccs() {
+    let accOrders = orders.filter(o => o.service.startsWith('🎁') || o.service.startsWith('🎲'));
+    let html = '<table><tr><th>Thời gian</th><th>Chi tiết</th></tr>';
+    accOrders.reverse().forEach(o => html += `<tr><td>${o.createdAt}</td><td>${o.service}</td></tr>`);
+    html += '</table>';
+    document.getElementById('purchasedAccsTable').innerHTML = html || '<p>Chưa mua acc nào.</p>';
+  }
+
+  function loadPendingRecharges() {
+    let pending = recharges.filter(r => r.status === 'pending'), html = '<table><tr><th>User</th><th>Tổng</th><th>Thực nhận</th><th>Thẻ</th><th>Ngày</th><th>Hành động</th></tr>';
+    if (!pending.length) html += '<tr><td colspan="6">✨ Chưa có</td></tr>';
+    else pending.forEach(r => { let cardsText = r.cards.map(c => `${c.provider}(${c.fee}%) ${c.amount.toLocaleString()}đ`).join(', '); html += `<tr><td>${r.username}</td><td>${r.total.toLocaleString()}đ</td><td>${(r.totalReceive||r.total).toLocaleString()}đ</td><td>${cardsText}</td><td>${r.createdAt}</td><td><button class="btn btn-success btn-sm" onclick="updateRechargeStatus(${r.id},'approved')">Duyệt</button> <button class="btn btn-danger btn-sm" onclick="updateRechargeStatus(${r.id},'rejected')">Từ chối</button></td></tr>`; });
+    html += '</table>'; document.getElementById('pendingRecharges').innerHTML = html;
+  }
+
+  function loadAllRecharges() {
+    let html = '<table><tr><th>ID</th><th>User</th><th>Tổng</th><th>Thực nhận</th><th>Trạng thái</th><th>Ngày</th></tr>';
+    recharges.slice().reverse().forEach(r => { let cls = r.status==='approved'?'status-approved':(r.status==='rejected'?'status-rejected':'status-pending'), txt = r.status==='approved'?'Đã duyệt':(r.status==='rejected'?'Từ chối':'Chờ duyệt'); html += `<tr><td>${r.id}</td><td>${r.username}</td><td>${r.total.toLocaleString()}đ</td><td>${(r.totalReceive||r.total).toLocaleString()}đ</td><td><span class="status-badge ${cls}">${txt}</span></td><td>${r.createdAt}</td></tr>`; });
+    html += '</table>'; document.getElementById('allRecharges').innerHTML = html;
+  }
+
+  window.updateRechargeStatus = async (id, status) => {
+    let req = recharges.find(r => r.id === id);
+    if (req) {
+      req.status = status;
+      if (status === 'approved') {
+        let user = users.find(u => u.id === req.userId);
+        if (user) { user.balance += (req.totalReceive || req.total); }
+      }
+      await saveAll();
+      loadPendingRecharges(); loadAllRecharges(); searchUser(); loadAllUsers();
+    }
+  };
+
+  function loadAllOrders() {
+    let filter = document.getElementById('orderStatusFilter')?.value || 'all', filtered = filter==='all' ? orders : orders.filter(o => o.status === filter);
+    let html = '<table><tr><th>Mã đơn</th><th>User</th><th>Gói</th><th>Giá</th><th>Trạng thái</th><th>Ngày</th><th>Hành động</th></tr>';
+    filtered.reverse().forEach(o => { let cls = o.status==='pending'?'status-pending':(o.status==='processing'?'status-processing':(o.status==='completed'?'status-completed':'status-cancelled')), txt = o.status==='pending'?'Chờ':(o.status==='processing'?'Đang cày':(o.status==='completed'?'Xong':'Hủy')); html += `<tr><td>${o.id}</td><td>${o.username}</td><td>${o.service}</td><td>${o.price.toLocaleString()}đ</td><td><span class="status-badge ${cls}">${txt}</span></td><td>${o.createdAt}</td><td><select onchange="updateOrderStatus('${o.id}',this.value)"><option value="pending" ${o.status==='pending'?'selected':''}>Chờ</option><option value="processing" ${o.status==='processing'?'selected':''}>Đang cày</option><option value="completed" ${o.status==='completed'?'selected':''}>Xong</option><option value="cancelled" ${o.status==='cancelled'?'selected':''}>Hủy</option></select></td></tr>`; });
+    html += '</table>'; document.getElementById('allOrders').innerHTML = html;
+  }
+
+  window.updateOrderStatus = async (id, status) => { let o = orders.find(o => o.id === id); if (o) { o.status = status; await saveAll(); loadAllOrders(); } };
+
+  window.searchUser = () => {
+    let term = document.getElementById('searchUserInput').value.trim().toLowerCase(), found = users.filter(u => u.username.toLowerCase().includes(term));
+    let html = '<table><tr><th>Username</th><th>Số dư</th><th>Vai trò</th><th>Ngày tạo</th><th>Hành động</th></tr>';
+    found.forEach(u => { html += `<tr><td>${u.username}</td><td>${u.balance.toLocaleString()}đ</td><td>${u.role}</td><td>${u.createdAt}</td><td><button class="btn btn-warning btn-sm" onclick="editBalance('${u.username}')">Sửa</button> ${u.username!=='admin'?`<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.username}')">Xóa</button>`:''}</td></tr>`; });
+    html += '</table>'; document.getElementById('searchResult').innerHTML = html || '<p>Không tìm thấy</p>';
+  };
+
+  function loadAllUsers() {
+    let html = '<table><tr><th>Username</th><th>Số dư</th><th>Vai trò</th><th>Ngày tạo</th><th>Hành động</th></tr>';
+    users.forEach(u => { html += `<tr><td>${u.username}</td><td>${u.balance.toLocaleString()}đ</td><td>${u.role}</td><td>${u.createdAt}</td><td><button class="btn btn-warning btn-sm" onclick="editBalance('${u.username}')">Sửa</button> ${u.username!=='admin'?`<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.username}')">Xóa</button>`:''}</td></tr>`; });
+    document.getElementById('allUsersTable').innerHTML = html;
+  }
+
+  window.deleteUser = async (u) => { if (u==='admin') return alert('Không thể xóa admin!'); if (confirm(`Xóa ${u}?`)) { users = users.filter(x => x.username !== u); await saveAll(); searchUser(); loadAllUsers(); } };
+
+  window.editBalance = async (u) => {
+    let a = prompt('Số tiền cộng (âm để trừ):'); if (!a) return; a = parseInt(a); if (isNaN(a)) return;
+    let user = users.find(x => x.username === u);
+    if (user) { user.balance += a; await saveAll(); if (currentUser.username === u) { currentUser = user; updateUI(); } searchUser(); loadAllUsers(); }
+  };
+
+  function refreshAdmin() { loadPendingRecharges(); loadAllRecharges(); loadAllOrders(); searchUser(); loadAllUsers(); }
+
+  await loadAll();
+  document.getElementById('cardsContainer').appendChild(createCard()); calcTotal();
+
+  const savedUserId = sessionStorage.getItem('blox_user_id');
+  if (savedUserId) {
+    currentUser = users.find(u => u.id == savedUserId);
+    if (currentUser) showMain();
+    else sessionStorage.removeItem('blox_user_id');
+  }
+
+  window.login = login;
+  window.register = register;
+  window.showRegister = showRegister;
+  window.showLogin = showLogin;
+  window.logout = logout;
+  window.navigateTo = navigateTo;
+  window.requestRecharge = requestRecharge;
+  window.createOrder = createOrder;
+  window.buyCustomAcc = buyCustomAcc;
+  window.buyRandomAcc = buyRandomAcc;
+  window.showAddCustomAccForm = showAddCustomAccForm;
+  window.hideAddCustomAccForm = hideAddCustomAccForm;
+  window.addCustomAcc = addCustomAcc;
+  window.showAddRandomAccForm = showAddRandomAccForm;
+  window.hideAddRandomAccForm = hideAddRandomAccForm;
+  window.addRandomAcc = addRandomAcc;
+  window.updateRechargeStatus = updateRechargeStatus;
+  window.updateOrderStatus = updateOrderStatus;
+  window.searchUser = searchUser;
+  window.editBalance = editBalance;
+  window.deleteUser = deleteUser;
+</script>
+</body>
+</html>
